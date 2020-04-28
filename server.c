@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <stdlib.h>
 
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
