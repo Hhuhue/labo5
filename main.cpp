@@ -78,7 +78,8 @@ int main(int argc, char* argv[]){
    
     read = fread(buffer4, sizeof(buffer4), 1, file);
     printf("%u %u %u %u\n", buffer4[0], buffer4[1], buffer4[2], buffer4[3]);   
-    header.data_size = buffer4[0] | (buffer4[1] << 8) | (buffer4[2] << 16) | (buffer4[3] << 24);   
+    //header.data_size = buffer4[0] | (buffer4[1] << 8) | (buffer4[2] << 16) | (buffer4[3] << 24);   
+    header.data_size = header.overall_size - sizeof(struct HEADER);
     printf("(41-44) Size of data chunk: %u \n", header.data_size);
    
     // calculate no.of samples   
