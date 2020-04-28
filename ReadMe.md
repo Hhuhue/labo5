@@ -3,3 +3,8 @@ yum install bluez-libs-devel
 
 g++ -g -o alsatest main.cpp -lasound
 scp music.wav pi@domain.duckdns.org:/home/pi/projects/laboratoire5
+
+bluetooth :
+gcc -o client client.c -lbluetooth
+    exemple possible d'utilisation du client (pas sûr):
+./client B8:27:EB:1A:4E:52 2 0 (changer le deuxième argument pour l'adresse mac du bluetooth du rpi)
