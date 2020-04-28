@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 struct HEADER {
     unsigned char riff[4];                      // RIFF string
@@ -26,4 +29,10 @@ struct HEADER {
 
     unsigned int data_size;                     // NumSamples * NumChannels * BitsPerSample/8 - size of the next chunk that will be read
 
+    long num_samples;
+
+    long size_of_each_sample;
+
 };
+
+struct HEADER* init_file(FILE* file);

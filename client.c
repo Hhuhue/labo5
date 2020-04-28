@@ -19,54 +19,55 @@
 
 int main(int argc, char *argv[])
 {
-  int sock, d;
-  struct sockaddr_rc laddr, raddr;
-  struct hci_dev_info di;
+  //structre variable for bluetooth address of server
+  struct sockaddr_rc addrress = { 0 };
+  int s, status;
 
-  if(argc < 4)
-    {
-      printf("%s <btaddr> <channel> <cmd>\n", argv[0]);
-      exit(0);
-    }
+  // Already known address and name of server
+  char dest[18]=argv[1];
+  char namelaptop[20]="ubuntu";
 
-  if(hci_devinfo(0, &di) < 0) 
-    {
-      perror("HCI device info failed");
+  // allocate a socket
+  s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+
+  // set the connection parameters (who to connect to)
+  // AF_BLUETOOTH is a bluetooth family, that is generally used.
+  addrress.rc_family = AF_BLUETOOTH;
+  addrress.rc_channel = (uint8_t) 1;
+  // Convert the string "48:51:B7:85:2B:62" into an bluetooth address.
+  str2ba( dest, &addrress.rc_bdaddr );
+
+  // Initializtion of local bluetooth device
+  int dev_id, sock;
+  dev_id = hci_get_route(NULL);
+  sock = hci_open_dev( dev_id );
+  if (dev_id < 0 || sock < 0) {
+      perror("Error while opening socket");
       exit(1);
-    }
+  }
 
-  printf("Local device %s\n", batostr(&di.bdaddr));
+  status = connect(s, (struct sockaddr *)&addrress, sizeof(addrress));
+  //successful, connect() returns 0.
 
-  laddr.rc_family = AF_BLUETOOTH;
-  laddr.rc_bdaddr = di.bdaddr;
-  laddr.rc_channel = 0;
+  printf("connection status: %d\n\n",status);
+  //0 show OK
 
-  raddr.rc_family = AF_BLUETOOTH;
-  str2ba(argv[1],&raddr.rc_bdaddr);
-  raddr.rc_channel = atoi(argv[2]);  
+  // send contents of file "test.txt" to server
+  FILE *fp = fopen(argv[2], "r");    
+  // Buffer array for string
+  char li[100];
 
-  if( (sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0)
-    {
-      perror("socket");
-    }
+  while(fscanf(fp, "%s", li) != EOF){
+      printf("%s", li);
+      write(s, li, 6);    
+  }
+  // Instade of fscanf, scanf can also be used to take input from terminal
 
-  if(bind(sock, (struct sockaddr *)&laddr, sizeof(laddr)) < 0)
-    {
-      perror("bind");
-      exit(1);
-    }
+  // Ending the connection, letting the server know it by sending "END"
+  write(s, "END", 6);
 
-  printf("Remote device %s\n", argv[1]);
-
-  if(connect(sock, (struct sockaddr *)&raddr, sizeof(raddr)) < 0)
-    {
-      perror("connect");
-      exit(1);
-    }
-  
-  printf("Connected.\nSending data %s\n",argv[3]);
-  send(sock,argv[3],strlen(argv[3]),0);
-  printf("Disconnect.\n");
-  close(sock);
+  printf("Closing socket\n");
+  close(s);
+  close( sock );
   return 0;
 }

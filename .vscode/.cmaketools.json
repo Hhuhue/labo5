@@ -28,9 +28,10 @@
                   {
                     "compileFlags": "-Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/opt/vc/lib -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/local/lib -g  ",
                     "isGenerated": false,
-                    "language": "CXX",
+                    "language": "C",
                     "sources": [
-                      "main.cpp"
+                      "main.c",
+                      "wave.c"
                     ]
                   }
                 ],
@@ -39,7 +40,7 @@
                 "linkFlags": "-rdynamic",
                 "linkLanguageFlags": "-Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/opt/vc/lib -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/local/lib -g",
                 "linkLibraries": "-lasound",
-                "linkerLanguage": "CXX",
+                "linkerLanguage": "C",
                 "name": "playsound",
                 "sourceDirectory": "/home/setr/projets/laboratoire5",
                 "sysroot": "/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot",
@@ -50,7 +51,7 @@
         ]
       }
     ],
-    "cookie": "0.9473354310887905",
+    "cookie": "0.3816239298203272",
     "inReplyTo": "codemodel",
     "type": "reply"
   }
