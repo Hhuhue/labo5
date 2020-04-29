@@ -18,9 +18,6 @@
   
 // Driver code 
 int main() { 
-
-    time_t time_begin = time(NULL);
-
     int sockfd, new_socket; 
     char buffer[MAXLINE]; 
     char *hello = "Hello from server"; 
@@ -96,6 +93,7 @@ int main() {
     fprintf(stderr, "Starting read/write loop\n");
     int total = 0;
     char data_buffer[header[2]];
+    time_t time_begin = time(NULL);
     for (long i = 1; i <= header[3]; i++){
         n = read(new_socket, (char*)data_buffer, sizeof(data_buffer)); 
         total += 1;
