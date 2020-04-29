@@ -45,13 +45,38 @@
                 "sourceDirectory": "/home/setr/projets/laboratoire5",
                 "sysroot": "/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot",
                 "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/home/setr/projets/laboratoire5/build/server"
+                ],
+                "buildDirectory": "/home/setr/projets/laboratoire5/build",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/opt/vc/lib -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/local/lib -g  ",
+                    "isGenerated": false,
+                    "language": "C",
+                    "sources": [
+                      "server.c"
+                    ]
+                  }
+                ],
+                "fullName": "server",
+                "isGeneratorProvided": false,
+                "linkFlags": "-rdynamic",
+                "linkLanguageFlags": "-Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/opt/vc/lib -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link,/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot/usr/local/lib -g",
+                "linkerLanguage": "C",
+                "name": "server",
+                "sourceDirectory": "/home/setr/projets/laboratoire5",
+                "sysroot": "/root/arm-cross-comp-env/arm-raspbian-linux-gnueabihf/arm-raspbian-linux-gnueabihf/sysroot",
+                "type": "EXECUTABLE"
               }
             ]
           }
         ]
       }
     ],
-    "cookie": "0.3816239298203272",
+    "cookie": "0.7463307327363815",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

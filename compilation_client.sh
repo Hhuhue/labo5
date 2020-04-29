@@ -1,1 +1,1 @@
-gcc -o client client.c -lbluetooth
+gcc -g -o client client.c

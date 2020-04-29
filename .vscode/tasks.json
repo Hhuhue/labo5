@@ -6,7 +6,7 @@
         {
             "label": "synch",
             "type": "shell",
-            "command": "./syncAndStartGDB.sh ${workspaceRoot} mountain-goat.duckdns.org",
+            "command": "./syncAndStartGDB.sh ${workspaceRoot} private-driver.duckdns.org",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
