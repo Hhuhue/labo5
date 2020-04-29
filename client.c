@@ -51,7 +51,10 @@ int main(int argc, char* argv[]) {
     char data_buffer[header->size_of_each_sample];
     for (long i = 1; i <= header->num_samples; i++){
         read = fread(data_buffer, sizeof(data_buffer), 1, file);
-	    sendto(sockfd, (char*)data_buffer, read, MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
+	    sendto(sockfd, (char*)data_buffer, sizeof(data_buffer), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
+		if(i%5000 == 0){
+			printf("read is %i, data : %x%x%x%x\n", read, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
+		}
     }    
     fprintf(stderr, "End read/write loop\n");
 

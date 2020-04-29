@@ -39,6 +39,10 @@ int main(int argc, char* argv[]){
         read = fread(data_buffer, sizeof(data_buffer), 1, file);
         total += read;
         pcmrc = snd_pcm_writei(pcm_handle, data_buffer, read);
+        if(i%5000 == 0){
+			printf("read is %i, data : %x%x%x%x\n", read, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
+		}
+
         if (pcmrc == -EPIPE){
             fprintf(stderr, "Underrun!\n");
             snd_pcm_prepare(pcm_handle);

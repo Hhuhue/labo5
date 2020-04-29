@@ -88,15 +88,19 @@ int main() {
     int total = 0;
     char data_buffer[header->size_of_each_sample];
     for (long i = 1; i <= header->num_samples; i++){
-        read = recvfrom(sockfd, (unsigned int*)data_buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
-        total += read;
-        pcmrc = snd_pcm_writei(pcm_handle, data_buffer, read);
+        read = recvfrom(sockfd, (char*)data_buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+        total += 1;
+        pcmrc = snd_pcm_writei(pcm_handle, data_buffer, 1);
+		if(i%500 == 0){
+			printf("read is %i, data : %x%x%x%x\n", read, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
+		}
+
         if (pcmrc == -EPIPE){
             fprintf(stderr, "Underrun!\n");
             snd_pcm_prepare(pcm_handle);
         } else if (pcmrc < 0) {
             fprintf(stderr, "Error writting to PCM device: %s\n", snd_strerror(pcmrc));
-        } else if (pcmrc != read) {
+        } else if (pcmrc != 1) {
             fprintf(stderr, "PCM write differs from PCM read.\n");
         }
     }
