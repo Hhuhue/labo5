@@ -9,6 +9,7 @@
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
 #include <alsa/asoundlib.h>
+#include <time.h>
 #include "wave.h"
   
 #define PORT     8080 
@@ -17,6 +18,9 @@
   
 // Driver code 
 int main() { 
+
+    time_t time_begin = time(NULL);
+
     int sockfd, new_socket; 
     char buffer[MAXLINE]; 
     char *hello = "Hello from server"; 
@@ -115,6 +119,9 @@ int main() {
 
     err = snd_pcm_drain(pcm_handle);
     err = snd_pcm_close(pcm_handle);
+
+    time_t time_end = time(NULL);
+    fprintf(stderr, "Total time: %d\n", time_end - time_begin);
 
     return 0; 
 } 
