@@ -29,9 +29,9 @@ struct HEADER {
 
     unsigned int data_size;                     // NumSamples * NumChannels * BitsPerSample/8 - size of the next chunk that will be read
 
-    long num_samples;
+    unsigned int num_samples;
 
-    long size_of_each_sample;
+    unsigned int size_of_each_sample;
 
 } HEADER;
 

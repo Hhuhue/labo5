@@ -46,12 +46,16 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	int n, len; 
+	int n, len;
+    unsigned int a = 4;
+    unsigned int b = 1537857;
+    unsigned int params[4];
+    params[0] = header->channels;
+    params[1] = header->sample_rate;
+    params[2] = header->size_of_each_sample;
+    params[3] = header->num_samples;
 	
-	send(sockfd, &header->channels, sizeof(unsigned int), 0); 
-	send(sockfd, &header->sample_rate, sizeof(unsigned int), 0); 
-	send(sockfd, &header->size_of_each_sample, sizeof(long), 0); 
-	send(sockfd, &header->num_samples, sizeof(long), 0); 
+	send(sockfd, params, sizeof(params), 0); 
 	printf("Header infos sent.\n"); 
 
     fprintf(stderr, "Starting read/write loop\n");

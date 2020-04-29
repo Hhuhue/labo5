@@ -23,10 +23,6 @@ int main() {
     struct sockaddr_in servaddr, cliaddr;
     int opt = 1; 
     int addrlen = sizeof(servaddr);
-
-    FILE* file;
-    file = fopen("Crab8.wav", "rb");
-    struct HEADER* header = init_file(file);    
       
     // Creating socket file descriptor 
     if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) { 
@@ -70,20 +66,11 @@ int main() {
     len = sizeof(cliaddr);  //len is value/resuslt 
   
     n = read(new_socket, (unsigned int*)buffer, MAXLINE); 
-    unsigned int* channels = (unsigned int*) (buffer); 
-    printf("Client header: chanels is %lu \n", *channels); 
-    
-    n = read(new_socket, (unsigned int*)buffer, MAXLINE); 
-    unsigned int* sample_rate = (unsigned int*) (buffer); 
-    printf("Client header: sample_rate is %ld \n", *sample_rate); 
-    
-    n = read(new_socket, (long*)buffer, MAXLINE); 
-    long* sample_size = (long*) (buffer); 
-    printf("Client header: size sample is %ld \n", *sample_size); 
-
-    n = read(new_socket, (unsigned long*)buffer, MAXLINE); 
-    long* num_samples = (long*) (buffer); 
-    printf("Client header: num sample is %ld \n", *num_samples); 
+    unsigned int* header = (unsigned int*) (buffer); 
+    printf("Client header: chanels is %lu \n", header[0]); 
+    printf("Client header: sample_rate is %lu \n", header[1]); 
+    printf("Client header: size sample is %lu \n", header[2]); 
+    printf("Client header: num sample is %lu \n", header[3]); 
 
     //Alsa Initialization
     snd_pcm_t *pcm_handle;
@@ -95,8 +82,8 @@ int main() {
     err = snd_pcm_hw_params_any(pcm_handle, params);
     err = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
     err = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
-    err = snd_pcm_hw_params_set_channels(pcm_handle, params, header->channels);
-    err = snd_pcm_hw_params_set_rate(pcm_handle, params, header->sample_rate, 0);
+    err = snd_pcm_hw_params_set_channels(pcm_handle, params, header[0]);
+    err = snd_pcm_hw_params_set_rate(pcm_handle, params, header[1], 0);
     err = snd_pcm_hw_params(pcm_handle, params);
     err = snd_pcm_hw_params_get_period_size(params, &frames, &dir);
     fprintf(stderr, "# frames in a period: %d\n", frames);
@@ -104,8 +91,8 @@ int main() {
 
     fprintf(stderr, "Starting read/write loop\n");
     int total = 0;
-    char data_buffer[header->size_of_each_sample];
-    for (long i = 1; i <= header->num_samples; i++){
+    char data_buffer[header[2]];
+    for (long i = 1; i <= header[3]; i++){
         n = read(new_socket, (char*)data_buffer, sizeof(data_buffer)); 
         total += 1;
         pcmrc = snd_pcm_writei(pcm_handle, data_buffer, 1);
