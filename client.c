@@ -18,7 +18,6 @@ int main(int argc, char* argv[]) {
 	char buffer[MAXLINE]; 
 	char *hello = "Hello from client"; 
 	struct sockaddr_in servaddr; 
-
     char *filename = argv[1];
 
     FILE* file;
@@ -46,9 +45,19 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
+    if(header->sample_rate > 12000){
+        char* buff;
+        sprintf(buff, "sox %s -r 11025 temp/song.wav rate ", filename);
+        system(buff);
+        sleep(1);        
+        fclose(file);
+        file = fopen("temp/song.wav", "rb");
+        printf("File opened\n");
+        header = init_file(file); 
+        printf("File initialized\n");
+    }
+
 	int n, len;
-    unsigned int a = 4;
-    unsigned int b = 1537857;
     unsigned int params[4];
     params[0] = header->channels;
     params[1] = header->sample_rate;
