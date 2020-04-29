@@ -33,6 +33,6 @@ struct HEADER {
 
     long size_of_each_sample;
 
-};
+} HEADER;
 
 struct HEADER* init_file(FILE* file);

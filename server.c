@@ -8,6 +8,7 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
+#include "wave.h"
   
 #define PORT     8080 
 #define MAXLINE 1024 
@@ -15,6 +16,7 @@
 // Driver code 
 int main() { 
     int sockfd; 
+    struct HEADER* header;
     char buffer[MAXLINE]; 
     char *hello = "Hello from server"; 
     struct sockaddr_in servaddr, cliaddr; 
@@ -44,11 +46,10 @@ int main() {
   
     len = sizeof(cliaddr);  //len is value/resuslt 
   
-    n = recvfrom(sockfd, (char*)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
-    buffer[n] = '\0'; 
-    printf("Client : %s\n", buffer); 
-    sendto(sockfd, (const char *)hello, strlen(hello), MSG_CONFIRM, (const struct sockaddr *) &cliaddr, len); 
-    printf("Hello message sent.\n");  
-      
+    n = recvfrom(sockfd, header, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    //buffer[n] = '\0'; 
+    printf("Client header: size sample is %i and number of samples is %i\n", header->size_of_each_sample, header->num_samples); 
+
+
     return 0; 
 } 
