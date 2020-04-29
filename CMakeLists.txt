@@ -6,3 +6,5 @@ add_executable(playsound main.c wave.c)
 target_link_libraries(playsound asound)
 
 add_executable(server server.c)
+target_link_libraries(server asound)
+
