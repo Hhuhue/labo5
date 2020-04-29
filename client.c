@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
     char data_buffer[header->size_of_each_sample];
     for (long i = 1; i <= header->num_samples; i++){
         read = fread(data_buffer, sizeof(data_buffer), 1, file);
-	    sendto(sockfd, data_buffer, read, MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
+	    sendto(sockfd, (char*)data_buffer, read, MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
     }    
     fprintf(stderr, "End read/write loop\n");
 

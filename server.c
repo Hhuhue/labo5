@@ -21,6 +21,10 @@ int main() {
     char buffer[MAXLINE]; 
     char *hello = "Hello from server"; 
     struct sockaddr_in servaddr, cliaddr; 
+
+    FILE* file;
+    file = fopen("Crab8.wav", "rb");
+    struct HEADER* header = init_file(file);    
       
     // Creating socket file descriptor 
     if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) { 
@@ -73,8 +77,8 @@ int main() {
     err = snd_pcm_hw_params_any(pcm_handle, params);
     err = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
     err = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
-    err = snd_pcm_hw_params_set_channels(pcm_handle, params, *channels);
-    err = snd_pcm_hw_params_set_rate(pcm_handle, params, *sample_rate, 0);
+    err = snd_pcm_hw_params_set_channels(pcm_handle, params, header->channels);
+    err = snd_pcm_hw_params_set_rate(pcm_handle, params, header->sample_rate, 0);
     err = snd_pcm_hw_params(pcm_handle, params);
     err = snd_pcm_hw_params_get_period_size(params, &frames, &dir);
     fprintf(stderr, "# frames in a period: %d\n", frames);
@@ -82,9 +86,9 @@ int main() {
 
     fprintf(stderr, "Starting read/write loop\n");
     int total = 0;
-    char data_buffer[*sample_size];
-    for (long i = 1; i <= *num_samples; i++){
-        read = recvfrom(sockfd, (char*)data_buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    char data_buffer[header->size_of_each_sample];
+    for (long i = 1; i <= header->num_samples; i++){
+        read = recvfrom(sockfd, (unsigned int*)data_buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
         total += read;
         pcmrc = snd_pcm_writei(pcm_handle, data_buffer, read);
         if (pcmrc == -EPIPE){
