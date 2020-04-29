@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 	}
 
     if(header->sample_rate > output_rate){
-        char* buff;
+        char buff[MAXLINE];
         sprintf(buff, "sox %s -r %i temp/song.wav rate ", filename, output_rate);
 		printf("%s \n",buff);
         system(buff);
