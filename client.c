@@ -45,9 +45,15 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-    if(header->sample_rate > 12000){
+	int output_rate = 11025;
+	if(argc == 4){
+		output_rate = atoi(argv[3]);
+	}
+
+    if(header->sample_rate > output_rate){
         char* buff;
-        sprintf(buff, "sox %s -r 11025 temp/song.wav rate ", filename);
+        sprintf(buff, "sox %s -r %i temp/song.wav rate ", filename, output_rate);
+		printf("%s \n",buff);
         system(buff);
         sleep(1);        
         fclose(file);
