@@ -40,8 +40,10 @@ int main(int argc, char* argv[]) {
 	
 	int n, len; 
 	
-	sendto(sockfd, header, sizeof(struct HEADER), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
-	printf("Header sent.\n"); 
+	sendto(sockfd, &header->size_of_each_sample, sizeof(long), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
+	sendto(sockfd, &header->num_samples, sizeof(long), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
+    printf("Client header: size sample is %ld and number of samples is %ld\n", header->size_of_each_sample, header->num_samples); 
+	printf("Header infos sent.\n"); 
 
 	close(sockfd); 
 	return 0; 

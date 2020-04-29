@@ -16,7 +16,6 @@
 // Driver code 
 int main() { 
     int sockfd; 
-    struct HEADER* header;
     char buffer[MAXLINE]; 
     char *hello = "Hello from server"; 
     struct sockaddr_in servaddr, cliaddr; 
@@ -46,10 +45,15 @@ int main() {
   
     len = sizeof(cliaddr);  //len is value/resuslt 
   
-    n = recvfrom(sockfd, header, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
-    //buffer[n] = '\0'; 
-    printf("Client header: size sample is %i and number of samples is %i\n", header->size_of_each_sample, header->num_samples); 
+    n = recvfrom(sockfd, (long*)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    long* sample_size = (long*) (buffer); 
+    printf("Client header: size sample is %ld \n", *sample_size); 
 
+    n = recvfrom(sockfd, (long*)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    long* num_samples = (long*) (buffer); 
+    printf("Client header: num sample is %ld \n", *num_samples); 
+
+    //printf("Client header: data size %ld\n", header->data_size); 
 
     return 0; 
 } 
