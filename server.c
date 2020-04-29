@@ -17,20 +17,26 @@
   
 // Driver code 
 int main() { 
-    int sockfd; 
+    int sockfd, new_socket; 
     char buffer[MAXLINE]; 
     char *hello = "Hello from server"; 
-    struct sockaddr_in servaddr, cliaddr; 
+    struct sockaddr_in servaddr, cliaddr;
+    int opt = 1; 
+    int addrlen = sizeof(servaddr);
 
     FILE* file;
     file = fopen("Crab8.wav", "rb");
     struct HEADER* header = init_file(file);    
       
     // Creating socket file descriptor 
-    if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) { 
+    if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) { 
         perror("socket creation failed"); 
         exit(EXIT_FAILURE); 
     } 
+    if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))){
+        perror("setsockopt");
+        exit(EXIT_FAILURE); 
+    }
       
     memset(&servaddr, 0, sizeof(servaddr)); 
     memset(&cliaddr, 0, sizeof(cliaddr)); 
@@ -47,23 +53,35 @@ int main() {
         exit(EXIT_FAILURE); 
     } 
       
+    if (listen(sockfd, 3) < 0 ) 
+    { 
+        perror("listen failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+
+    if ((new_socket = accept(sockfd, (struct sockaddr*)&servaddr, (socklen_t*)&addrlen))<0) 
+    { 
+        perror("accept failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+
     int len, n; 
   
     len = sizeof(cliaddr);  //len is value/resuslt 
   
-    n = recvfrom(sockfd, (unsigned int*)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    n = read(new_socket, (unsigned int*)buffer, MAXLINE); 
     unsigned int* channels = (unsigned int*) (buffer); 
     printf("Client header: chanels is %lu \n", *channels); 
     
-    n = recvfrom(sockfd, (unsigned int*)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    n = read(new_socket, (unsigned int*)buffer, MAXLINE); 
     unsigned int* sample_rate = (unsigned int*) (buffer); 
     printf("Client header: sample_rate is %ld \n", *sample_rate); 
     
-    n = recvfrom(sockfd, (long*)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    n = read(new_socket, (long*)buffer, MAXLINE); 
     long* sample_size = (long*) (buffer); 
     printf("Client header: size sample is %ld \n", *sample_size); 
 
-    n = recvfrom(sockfd, (long*)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+    n = read(new_socket, (unsigned long*)buffer, MAXLINE); 
     long* num_samples = (long*) (buffer); 
     printf("Client header: num sample is %ld \n", *num_samples); 
 
@@ -71,7 +89,7 @@ int main() {
     snd_pcm_t *pcm_handle;
     snd_pcm_hw_params_t *params;
     snd_pcm_uframes_t frames;
-    int dir, pcmrc, err, read;
+    int dir, pcmrc, err;
     err = snd_pcm_open(&pcm_handle, PCM_DEVICE, SND_PCM_STREAM_PLAYBACK, 0);
     snd_pcm_hw_params_alloca(&params);
     err = snd_pcm_hw_params_any(pcm_handle, params);
@@ -88,11 +106,11 @@ int main() {
     int total = 0;
     char data_buffer[header->size_of_each_sample];
     for (long i = 1; i <= header->num_samples; i++){
-        read = recvfrom(sockfd, (char*)data_buffer, MAXLINE, MSG_WAITALL, (struct sockaddr*) &cliaddr, &len); 
+        n = read(new_socket, (char*)data_buffer, sizeof(data_buffer)); 
         total += 1;
         pcmrc = snd_pcm_writei(pcm_handle, data_buffer, 1);
-		if(i%500 == 0){
-			printf("read is %i, data : %x%x%x%x\n", read, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
+		if(i<20){
+			printf("n is %i, data : %x%x%x%x\n", n, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
 		}
 
         if (pcmrc == -EPIPE){

@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     struct HEADER* header = init_file(file); 
 
 	// Creating socket file descriptor 
-	if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) { 
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) { 
 		perror("socket creation failed"); 
 		exit(EXIT_FAILURE); 
 	} 
@@ -36,25 +36,34 @@ int main(int argc, char* argv[]) {
 	// Filling server information 
 	servaddr.sin_family = AF_INET; 
 	servaddr.sin_port = htons(PORT); 
-	servaddr.sin_addr.s_addr = inet_addr(argv[2]); 
+	if(inet_pton(AF_INET, argv[2], &servaddr.sin_addr)<=0){
+		printf("Invalid address \n");
+		return -1;
+	}
 	
+	if(connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0){
+		printf("Connection Failed \n");
+		return -1;
+	}
+
 	int n, len; 
 	
-	sendto(sockfd, &header->channels, sizeof(unsigned int), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
-	sendto(sockfd, &header->sample_rate, sizeof(unsigned int), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
-	sendto(sockfd, &header->size_of_each_sample, sizeof(long), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
-	sendto(sockfd, &header->num_samples, sizeof(long), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
+	send(sockfd, &header->channels, sizeof(unsigned int), 0); 
+	send(sockfd, &header->sample_rate, sizeof(unsigned int), 0); 
+	send(sockfd, &header->size_of_each_sample, sizeof(long), 0); 
+	send(sockfd, &header->num_samples, sizeof(long), 0); 
 	printf("Header infos sent.\n"); 
 
     fprintf(stderr, "Starting read/write loop\n");
     int total, read = 0;
     char data_buffer[header->size_of_each_sample];
+	
     for (long i = 1; i <= header->num_samples; i++){
         read = fread(data_buffer, sizeof(data_buffer), 1, file);
-	    sendto(sockfd, (char*)data_buffer, sizeof(data_buffer), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
-		if(i%5000 == 0){
+		if(i<20){
 			printf("read is %i, data : %x%x%x%x\n", read, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
 		}
+		send(sockfd, (char*)data_buffer, sizeof(data_buffer), 0); 
     }    
     fprintf(stderr, "End read/write loop\n");
 
