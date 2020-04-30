@@ -79,9 +79,6 @@ int main(int argc, char* argv[]) {
 	
     for (long i = 1; i <= header->num_samples; i++){
         read = fread(data_buffer, sizeof(data_buffer), 1, file);
-		if(i<20){
-			printf("read is %i, data : %x%x%x%x\n", read, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
-		}
 		send(sockfd, (char*)data_buffer, sizeof(data_buffer), 0); 
     }    
     fprintf(stderr, "End read/write loop\n");

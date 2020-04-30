@@ -98,9 +98,6 @@ int main() {
         n = read(new_socket, (char*)data_buffer, sizeof(data_buffer)); 
         total += 1;
         pcmrc = snd_pcm_writei(pcm_handle, data_buffer, 1);
-		if(i<20){
-			printf("n is %i, data : %x%x%x%x\n", n, data_buffer[0],data_buffer[1],data_buffer[2],data_buffer[3] );
-		}
 
         if (pcmrc == -EPIPE){
             fprintf(stderr, "Underrun!\n");
