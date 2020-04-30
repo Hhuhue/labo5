@@ -41,12 +41,12 @@ def showChart(data):
         plots.append(plot)
         legend_labels.append(str(dataset["Title"] + " (" + str(dataset["Freq"]) + "kHz)"))
 
-    axis.set_xlabel("Demanded Frequency (kHz)")
+    axis.set_xlabel("Requested Frequency (kHz)")
     axis.set_ylabel("Performance Ratio")
-    axis.set_title("Performance Ratio by Demanded Frequencies")
+    axis.set_title("Performance Ratio by Requested Frequencies")
     axis.grid(True)
 
-    figure.legend(plots, labels=legend_labels, loc="upper right", prop={'size':6},borderaxespad=0.1, title="Native Frequencies")
+    plt.legend(plots, labels=legend_labels, loc="upper right", prop={'size':8}, framealpha=1.0, borderaxespad=0.1, title="Native Frequencies")
     figure.tight_layout(pad=0.1)   
     plt.subplots_adjust(right=0.85)
     plt.show()
